@@ -10,6 +10,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy everything from deploybackend/ into /app
 COPY . .
+COPY app/models/yolov8n-face-lindevs.pt /app/models/
 
 ENV PORT=8080
 
