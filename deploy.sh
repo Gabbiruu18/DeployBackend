@@ -21,15 +21,15 @@ gcloud artifacts repositories create face-repo --repository-format=docker --loca
 # Build image using Cloud Build
 gcloud builds submit --tag "${IMAGE}" --project "${PROJECT_ID}"
 
-# Deploy to Cloud Run
+# Deploy to Cloud Run with increased memory
 gcloud run deploy "${SERVICE_NAME}" \
   --image "${IMAGE}" \
   --region "${REGION}" \
   --platform managed \
   --allow-unauthenticated \
-  --cpu 2 --memory 2Gi \
+  --cpu 2 --memory 4Gi \
   --concurrency 1 \
-  --set-env-vars BUCKET_NAME=agila-c10a4.appspot.com,SIM_THRESHOLD=0.65 \
+  --set-env-vars BUCKET_NAME=agila-c10a4.firebasestorage.app,SIM_THRESHOLD=0.65 \
   --project "${PROJECT_ID}"
 
 # Show URL
