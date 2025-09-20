@@ -1,31 +1,31 @@
-# Use Python 3.10 slim as the base image
+
+# Dockerfile for Cloud Run
 FROM python:3.10-slim
 
-# Set environment variables
-ENV PYTHONUNBUFFERED=True
-ENV APP_HOME=/app
-ENV PORT=8080
-WORKDIR $APP_HOME
-
-# Install system dependencies required by OpenCV and other libraries
+# System deps for OpenCV / Torch
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libglib2.0-0 \
-    libsm6 \
-    libxext6 \
-    libxrender1 \
-    libgl1 \
-    ffmpeg \
-    libgomp1 \
- && rm -rf /var/lib/apt/lists/*
+    build-essential \
+    libglib2.0-0 libgl1 libsm6 libxext6 libxrender1 \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first to leverage Docker cache
-COPY requirements.txt .
+WORKDIR /app
 
-# Install Python dependencies
+# Performance & reliability
+ENV PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    OMP_NUM_THREADS=1 \
+    OPENBLAS_NUM_THREADS=1 \
+    MKL_NUM_THREADS=1
+
+COPY requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code, including the model weights
-COPY . .
+# Copy code and models (place your .pt in models/)
+COPY agila_backend.py ./agila_backend.py
+COPY models ./models
 
-# Start the Gunicorn server
-CMD exec gunicorn app:app --bind 0.0.0.0:$PORT --timeout 600 --workers 1 --threads 8
+ENV PORT=8080
+EXPOSE 8080
+
+# Use gunicorn in Cloud Run
+CMD ["gunicorn", "-w", "1", "-k", "gthread", "-b", "0.0.0.0:8080", "--threads", "4", "--timeout", "120", "agila_backend:app"]

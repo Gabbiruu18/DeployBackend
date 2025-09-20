@@ -1,14 +1,20 @@
-flask
-flask-cors
-firebase-admin
-google-cloud-firestore
-google-cloud-storage
-ultralytics
-opencv-python-headless
-deepface
-pandas
-numpy
---extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.3.1+cpu
-torchvision==0.18.1+cpu
-gunicorn
+
+# Minimal, CPU-only stack for Cloud Run
+Flask==3.0.3
+flask-cors==4.0.1
+gunicorn==21.2.0
+
+numpy==1.26.4
+pandas==2.2.2
+opencv-python-headless==4.10.0.84
+scipy==1.11.4
+
+# Vision / ML
+torch==2.2.1
+ultralytics>=8.2.0,<9
+deepface==0.0.93
+
+# Firebase / Google Cloud
+firebase-admin==6.5.0
+google-cloud-storage==2.16.0
+google-cloud-firestore==2.16.0
