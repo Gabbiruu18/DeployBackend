@@ -6,6 +6,10 @@ google-cloud-storage
 ultralytics
 opencv-python-headless
 deepface
-# CPU PyTorch (ok for Cloud Run)
-torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 pandas
+numpy
+
+# PyTorch CPU wheels (note the separate option line)
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.3.1+cpu
+torchvision==0.18.1+cpu
