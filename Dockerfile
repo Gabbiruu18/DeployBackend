@@ -8,14 +8,14 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy everything from deploybackend/ into /app
-COPY . .
-# ... your base & pip install ...
 WORKDIR /app
 COPY models/yolov8n-face-lindevs.pt /app/models/yolov8n-face-lindevs.pt
 ENV YOLO_WEIGHTS=/app/models/yolov8n-face-lindevs.pt
-# copy app last so code changes rebuild quickly
-COPY app.py /app/
+
+# Copy everything from deploybackend/ into /app
+COPY . .
+# ... your base & pip install ...
+
 
 ENV PORT=8080
 
