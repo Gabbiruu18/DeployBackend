@@ -18,13 +18,8 @@ gcloud services enable run.googleapis.com artifactregistry.googleapis.com cloudb
 # Create Artifact Registry (if not exists)
 gcloud artifacts repositories create face-repo --repository-format=docker --location="${REGION}" --description="Face API images" --project "${PROJECT_ID}" || true
 
-# Build image
+# Build image using Cloud Build
 gcloud builds submit --tag "${IMAGE}" --project "${PROJECT_ID}"
-
-
-# add YOLO_WEIGHTS to --set-env-vars if you didn't use /app/models/...
---set-env-vars BUCKET_NAME=agila-c10a4.appspot.com,SIM_THRESHOLD=0.65,YOLO_WEIGHTS=/app/models/yolov8n-face-lindevs.pt
-
 
 # Deploy to Cloud Run
 gcloud run deploy "${SERVICE_NAME}" \
