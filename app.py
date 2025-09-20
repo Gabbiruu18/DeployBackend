@@ -297,8 +297,14 @@ def register_face():
             path = f"faces/{role}/{uid}/{safe}/face_{idx}.jpg"
             bucket.blob(path).upload_from_string(jpg.tobytes(), content_type="image/jpeg")
 
+    # replace the "if not embs:" block
     if not embs:
-        return jsonify({"status": "enrollment_failed", "reason": "no_valid_faces"}), 200
+        return jsonify({
+            "status": "enrollment_failed",
+            "reason": "no_faces_or_embeddings",
+            "hint": "Check YOLO weights path, YOLO_CONF, and upload field name 'image'."
+        }), 200
+
 
     # Average + normalize
     embs = np.stack(embs, axis=0)
