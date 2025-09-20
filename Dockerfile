@@ -28,4 +28,4 @@ ENV PORT=8080
 EXPOSE 8080
 
 # Use gunicorn in Cloud Run
-CMD ["gunicorn", "-w", "1", "-k", "gthread", "-b", "0.0.0.0:8080", "--threads", "4", "--timeout", "120", "agila_backend:app"]
+CMD ["gunicorn", "-w", "1", "-k", "gthread", "-b", "0.0.0.0:8080", "--threads", "4", "--timeout", "120", "app:app"]
