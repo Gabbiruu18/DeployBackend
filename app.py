@@ -16,10 +16,13 @@ from google.cloud.exceptions import NotFound
 # ------------------------
 # Config
 # ------------------------
-BUCKET_NAME = os.getenv("BUCKET_NAME", "agila-c10a4.firebasestorage.app")
+#BUCKET_NAME = os.getenv("BUCKET_NAME", "agila-c10a4.firebasestorage.app")
+BUCKET_NAME = os.getenv("BUCKET_NAME", "agila-c10a4.appspot.com")
 EMBEDDINGS_CSV_PATH = "faces/features_all.csv"
 MODEL_NAME = "SFace"
-YOLO_WEIGHTS = os.getenv("yolov8n-face-lindevs.pt")
+YOLO_WEIGHTS = os.getenv("YOLO_WEIGHTS", "/models/yolov8n-face-lindevs.pt")
+
+#YOLO_WEIGHTS="models/yolov8n-face-lindevs.pt"
 THRESHOLD = float(os.getenv("SIM_THRESHOLD", "0.65"))
 YOLO_CONF = float(os.getenv("YOLO_CONF", "0.5"))  # detection confidence
 MAX_ENROLL_IMAGES = int(os.getenv("MAX_ENROLL_IMAGES", "10"))

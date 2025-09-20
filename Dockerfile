@@ -8,6 +8,8 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
+# after COPY requirements & pip install
+COPY models/*.pt /app/models/
 
 ENV PORT=8080
 
