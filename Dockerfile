@@ -21,7 +21,7 @@ COPY requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy code and models (place your .pt in models/)
-COPY agila_backend.py ./agila_backend.py
+COPY app.py ./app.py
 COPY models ./models
 
 ENV PORT=8080

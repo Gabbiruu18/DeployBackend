@@ -2,7 +2,7 @@
 # Face API on Cloud Run (CPU)
 
 ## 1) Prepare model weights
-Put `yolov8n-face-lindevs.pt` inside `models/` beside `agila_backend.py` (already created for you).
+Put `yolov8n-face-lindevs.pt` inside `models/` beside `app.py` (already created for you).
 
 ## 2) Build & deploy
 Replace PROJECT_ID and region if needed.

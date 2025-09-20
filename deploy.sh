@@ -85,7 +85,7 @@ EOF
     # -------- Pre-flight checks --------
     command -v gcloud >/dev/null 2>&1 || die "gcloud not found. Use Cloud Shell or install the SDK."
     [[ -f "Dockerfile" ]] || die "Dockerfile not found in current directory."
-    [[ -f "agila_backend.py" ]] || die "agila_backend.py not found in current directory."
+    [[ -f "app.py" ]] || die "app.py not found in current directory."
     [[ -f "${YOLO_WEIGHTS}" ]] || die "Weights not found at ${YOLO_WEIGHTS}. Place your PT file there."
 
     # -------- Configure gcloud --------
