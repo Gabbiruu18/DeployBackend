@@ -1,23 +1,21 @@
-FROM python:3.11-slim
+FROM python:3.10-slim
 
-# Minimal system deps
+# System libs for OpenCV/FFmpeg
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libglib2.0-0 libgomp1 && \
+    libglib2.0-0 libsm6 libxext6 libxrender1 ffmpeg && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-
-# Install Python deps first (better caching)
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt -f https://download.pytorch.org/whl/cpu
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy app + weights
+# Copy your Flask app (the file that contains "app = Flask(__name__)")
+# If your file is named something else, keep names consistent below.
 COPY . .
-# Ensure yolov8n-face-lindevs.pt is present in the repo root (or change YOLO_WEIGHTS env)
 
+# Cloud Run passes PORT
 ENV PORT=8080
-ENV BUCKET_NAME=agila-c10a4.appspot.com
-# Optional: ENV SIM_THRESHOLD=0.65
 
-# Start with gunicorn (good for prod)
-CMD exec gunicorn --bind :$PORT --workers 1 --threads 2 --timeout 120 app:app
+# Start with gunicorn for production
+# Replace main:app if your module is not main.py
+CMD exec gunicorn main:app --bind 0.0.0.0:$PORT --timeout 600 --workers 1 --threads 8
