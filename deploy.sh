@@ -20,7 +20,7 @@
     AUTH="public"            # public | private
     REGISTRY="gcr"           # gcr | ar (Artifact Registry)
     REPO="face-api"          # AR repo name if --registry ar
-    BUCKET_NAME="agila-c10a4.firebasestorage.app"
+    BUCKET_NAME="agila-c10a4.appspot.com"
     SIM_THRESHOLD="0.60"
     YOLO_WEIGHTS="models/yolov8n-face-lindevs.pt"
     SERVICE_ACCOUNT=""       # optional: pass an explicit SA email

@@ -10,7 +10,7 @@ Replace PROJECT_ID and region if needed.
 gcloud config set project lithe-site-472709-p5
 gcloud builds submit --tag gcr.io/lithe-site-472709-p5/face-api
 
-gcloud run deploy face-api       --image gcr.io/lithe-site-472709-p5/face-api       --region asia-southeast1       --allow-unauthenticated       --cpu 2 --memory 2Gi       --port 8080       --set-env-vars BUCKET_NAME=agila-c10a4.firebasestorage.app,SIM_THRESHOLD=0.60,YOLO_WEIGHTS=models/yolov8n-face-lindevs.pt
+gcloud run deploy face-api       --image gcr.io/lithe-site-472709-p5/face-api       --region asia-southeast1       --allow-unauthenticated       --cpu 2 --memory 2Gi       --port 8080       --set-env-vars BUCKET_NAME=agila-c10a4.appspot.com,SIM_THRESHOLD=0.60,YOLO_WEIGHTS=models/yolov8n-face-lindevs.pt
 ```
 
 > Tip: If you prefer authenticated-only access, remove `--allow-unauthenticated` and call with an identity token:
