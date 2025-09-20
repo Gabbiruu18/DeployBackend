@@ -1,87 +1,35 @@
-# AGILA Face API — Cloud Run Starter
 
-This is a **copy‑paste** starter you can deploy to **Cloud Run**.  
-It matches your storage layout:
+# Face API on Cloud Run (CPU)
 
-- Embeddings CSV: `faces/features_all.csv`
-- Photos: `faces/{role}/{uid}/{name}/face_k.jpg`
+## 1) Prepare model weights
+Put `yolov8n-face-lindevs.pt` inside `models/` beside `agila_backend.py` (already created for you).
 
-## Files
-- `app.py` — Flask API (`/register-face`, `/recognize-face`, `/reload-index`, `/health`)
-- `requirements.txt` — Python deps (Torch CPU, DeepFace, Ultralytics, OpenCV headless)
-- `Dockerfile` — container build
-- `deploy.sh` — one‑command build + deploy (Linux/macOS)
-
-## You need
-1. **gcloud** SDK installed and logged in:
-   ```bash
-   gcloud auth login
-   gcloud config set project YOUR_PROJECT_ID
-   ```
-2. Your **Firebase bucket name** (default used here: `agila-c10a4.appspot.com`).
-3. The YOLO face weights file in this folder: `yolov8n-face-lindevs.pt`
-
-## Quick deploy (recommended)
+## 2) Build & deploy
+Replace PROJECT_ID and region if needed.
 ```bash
-# in this folder
-chmod +x deploy.sh
-./deploy.sh YOUR_PROJECT_ID
-```
-- Region defaults to `asia-southeast1`. Change with `./deploy.sh YOUR_PROJECT_ID face-api asia-southeast1`.
-- After deploy, the script prints the **service URL**.
+gcloud config set project lithe-site-472709-p5
+gcloud builds submit --tag gcr.io/lithe-site-472709-p5/face-api
 
-## Manual deploy (if you prefer commands)
-```bash
-# 1) Enable services
-gcloud services enable run.googleapis.com artifactregistry.googleapis.com cloudbuild.googleapis.com firestore.googleapis.com storage.googleapis.com
-
-# 2) Create a Docker repo (one time)
-gcloud artifacts repositories create face-repo --repository-format=docker --location=asia-southeast1 --description="Face API images"
-
-# 3) Build the image
-gcloud builds submit --tag asia-southeast1-docker.pkg.dev/YOUR_PROJECT_ID/face-repo/face-api
-
-# 4) Deploy to Cloud Run
-gcloud run deploy face-api \
-  --image asia-southeast1-docker.pkg.dev/YOUR_PROJECT_ID/face-repo/face-api \
-  --region asia-southeast1 \
-  --platform managed \
-  --allow-unauthenticated \
-  --cpu 2 --memory 2Gi \
-  --concurrency 1 \
-  --set-env-vars BUCKET_NAME=agila-c10a4.appspot.com,SIM_THRESHOLD=0.65
+gcloud run deploy face-api       --image gcr.io/lithe-site-472709-p5/face-api       --region asia-southeast1       --allow-unauthenticated       --cpu 2 --memory 2Gi       --port 8080       --set-env-vars BUCKET_NAME=agila-c10a4.firebasestorage.app,SIM_THRESHOLD=0.60,YOLO_WEIGHTS=models/yolov8n-face-lindevs.pt
 ```
 
-## Give permissions to the service account
+> Tip: If you prefer authenticated-only access, remove `--allow-unauthenticated` and call with an identity token:
+> `curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" ...`
+
+## 3) Test
 ```bash
-SA_EMAIL=$(gcloud run services describe face-api --region asia-southeast1 --format='value(spec.template.spec.serviceAccountName)')
-gcloud projects add-iam-policy-binding YOUR_PROJECT_ID --member="serviceAccount:${SA_EMAIL}" --role="roles/storage.objectAdmin"
-gcloud projects add-iam-policy-binding YOUR_PROJECT_ID --member="serviceAccount:${SA_EMAIL}" --role="roles/datastore.user"
-```
+# Health
+curl -s https://YOUR_URL/ | jq
 
-## Test the API
-```bash
-BASE_URL=$(gcloud run services describe face-api --region asia-southeast1 --format='value(status.url)')
+# Register (multipart/form-data)
+curl -X POST https://YOUR_URL/register-face       -F "uid=abc123" -F "name=Jane Doe" -F "role=student"       -F "image=@/path/to/1.jpg" -F "image=@/path/to/2.jpg"
 
-# health
-curl -s "$BASE_URL/health"
-
-# reload (forces re-read of faces/features_all.csv)
-curl -s -X POST "$BASE_URL/reload-index"
-
-# register (uid plus multiple images)
-curl -s -X POST "$BASE_URL/register-face" \
-  -F uid=TEST_UID \
-  -F image=@/path/to/selfie1.jpg \
-  -F image=@/path/to/selfie2.jpg
-
-# recognize (single photo)
-curl -s -X POST "$BASE_URL/recognize-face" \
-  -F image=@/path/to/photo.jpg
+# Recognize
+curl -X POST https://YOUR_URL/recognize-face       -F "image=@/path/to/test.jpg"
 ```
 
 ## Notes
-- **First run may be slow** because DeepFace downloads SFace weights.
-- Keep `yolov8n-face-lindevs.pt` next to `app.py` (or set env `YOLO_WEIGHTS=/app/your_path.pt`).
-- You can tweak threshold via env: `SIM_THRESHOLD=0.65`.
-- If you run multiple Cloud Run instances, call `/reload-index` after a new enrollment so all instances refresh the CSV index.
+- Cloud Run standard instances have no GPUs; this image uses CPU-only Torch.
+- The app reads/writes `faces/features_all.csv` in **Cloud Storage** (bucket given by `BUCKET_NAME`).
+- Firebase Admin uses **Application Default Credentials** on Cloud Run (no JSON path in code).
+- You can tune performance by increasing CPU/memory and the similarity threshold via env vars.
