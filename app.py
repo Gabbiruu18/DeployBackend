@@ -115,7 +115,7 @@ def face_to_embedding(face_bgr: np.ndarray) -> Optional[np.ndarray]:
     face_rgb = cv2.resize(face_rgb, (160, 160))
     # DeepFace.represent returns list of dicts
     rep = DeepFace.represent(face_rgb, model_name=MODEL_NAME,
-                             detector_backend="skip", enforce_detection=False)
+                            detector_backend="skip", enforce_detection=False)
     if not rep:
         return None
     emb = np.asarray(rep[0]["embedding"], dtype=np.float32)
