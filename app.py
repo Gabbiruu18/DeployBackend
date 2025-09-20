@@ -17,7 +17,7 @@ from google.cloud.exceptions import NotFound
 # Config
 # ------------------------
 #BUCKET_NAME = os.getenv("BUCKET_NAME", "agila-c10a4.firebasestorage.app")
-BUCKET_NAME = os.getenv("BUCKET_NAME", "agila-c10a4.appspot.com")
+BUCKET_NAME = os.getenv("BUCKET_NAME", "agila-c10a4.firebasestorage.app")
 EMBEDDINGS_CSV_PATH = "faces/features_all.csv"
 MODEL_NAME = "SFace"
 YOLO_WEIGHTS = os.getenv("YOLO_WEIGHTS", "/app/models/yolov8n-face-lindevs.pt")
