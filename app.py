@@ -41,6 +41,13 @@ if not firebase_admin._apps:
 db = firestore.client()
 bucket = storage.bucket()
 
+if not os.path.exists(YOLO_WEIGHTS):
+    print(f"[WARN] Missing weights at {YOLO_WEIGHTS}", flush=True)
+    # fallback to a name that Ultralytics can auto-download if allowed:
+    YOLO_WEIGHTS = "yolov8n-face.pt"
+model = YOLO(YOLO_WEIGHTS)
+
+
 # ------------------------
 # Models (load once per instance)
 # ------------------------

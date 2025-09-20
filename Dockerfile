@@ -8,9 +8,11 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-WORKDIR /app
-COPY models/yolov8n-face-lindevs.pt /app/models/yolov8n-face-lindevs.pt
-ENV YOLO_WEIGHTS=/app/models/yolov8n-face-lindevs.pt
+# ensure the directory exists
+RUN mkdir -p /app/models
+# copy the weights into the image at the path your app expects
+COPY yolov8n-face-lindevs.pt /app/models/yolov8n-face-lindevs.pt
+
 
 # Copy everything from deploybackend/ into /app
 COPY . .
