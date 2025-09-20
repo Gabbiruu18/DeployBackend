@@ -20,7 +20,7 @@ from google.cloud.exceptions import NotFound
 BUCKET_NAME = os.getenv("BUCKET_NAME", "agila-c10a4.appspot.com")
 EMBEDDINGS_CSV_PATH = "faces/features_all.csv"
 MODEL_NAME = "SFace"
-YOLO_WEIGHTS = os.getenv("YOLO_WEIGHTS", "/models/yolov8n-face-lindevs.pt")
+YOLO_WEIGHTS = os.getenv("YOLO_WEIGHTS", "/app/models/yolov8n-face-lindevs.pt")
 
 #YOLO_WEIGHTS="models/yolov8n-face-lindevs.pt"
 THRESHOLD = float(os.getenv("SIM_THRESHOLD", "0.65"))

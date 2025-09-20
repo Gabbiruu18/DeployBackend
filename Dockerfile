@@ -7,11 +7,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy everything from deploybackend/ into /app
 COPY . .
-# after COPY requirements & pip install
-COPY models/*.pt /app/models/
 
 ENV PORT=8080
 
-# If your file is app.py:
+# If your file is app.py and has: app = Flask(__name__)
 CMD exec gunicorn app:app --bind 0.0.0.0:$PORT --timeout 600 --workers 1 --threads 8
+# If it's main.py, change to:  CMD exec gunicorn main:app --bind 0.0.0.0:$PORT --timeout 600 --workers 1 --threads 8
